@@ -1,6 +1,8 @@
 # flutter4reddit
 
 A new Flutter application for reddit.
+Read only mode for now.
+[Demo](app.gif)
 
 ## Getting Started
 
