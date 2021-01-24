@@ -2,7 +2,7 @@
 
 A new Flutter application for reddit.
 Read only mode for now.
-[Demo](app.gif)
+![Demo](app.gif)
 
 ## Getting Started
 
