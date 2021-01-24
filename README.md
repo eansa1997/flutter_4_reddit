@@ -1,10 +1,16 @@
 # flutter4reddit
 
 A new Flutter application for reddit.
-Read only mode for now.  
-
+Read only mode for now.   
+State management done with provider.  
+Reddit API package: [draw](https://pub.dev/packages/draw)  
 ![Demo](app.gif)  
 
+TODO:
+- GIF/Video thumbnail on click view.
+- Search page icons
+- Post view needs expandable comment tree. Only top level comments are rendered.
+- Home page listview needs to be refactored to a stream builder.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
