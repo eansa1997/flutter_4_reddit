@@ -10,7 +10,6 @@ class RedditModel with ChangeNotifier {
   String SECRET;
   String CLIENT;
   String AGENT;
-  List<Submission> currentPosts;
   List<SubmissionData> currentPostsData;
   void changeSubReddit(String newSubReddit) {
     subReddit = newSubReddit;
@@ -20,7 +19,6 @@ class RedditModel with ChangeNotifier {
 
   RedditModel(BuildContext c) {
     this.context = c;
-    currentPosts = new List<Submission>();
     currentPostsData = new List<SubmissionData>();
     initAPI();
   }
@@ -56,11 +54,9 @@ class RedditModel with ChangeNotifier {
   }
 
   void getCurrentPosts() async {
-    currentPosts.clear();
     currentPostsData.clear();
     var posts = r.subreddit(subReddit).hot(limit: 100);
     await for (Submission s in posts) {
-      currentPosts.add(s);
       SubmissionData data = new SubmissionData(s);
       currentPostsData.add(data);
     }
@@ -70,11 +66,11 @@ class RedditModel with ChangeNotifier {
 
   Future<void> loadMorePosts() async {
     print("loading more posts..");
-    var posts = r
-        .subreddit(subReddit)
-        .hot(limit: 100, after: currentPosts[currentPosts.length - 1].fullname);
+    var posts = r.subreddit(subReddit).hot(
+        limit: 100,
+        after:
+            currentPostsData[currentPostsData.length - 1].submission.fullname);
     await for (Submission s in posts) {
-      currentPosts.add(s);
       SubmissionData data = new SubmissionData(s);
       currentPostsData.add(data);
     }
@@ -88,11 +84,5 @@ class RedditModel with ChangeNotifier {
   Future<List<SubredditRef>> searchForSubredditsWithName(String name) async {
     var results = r.subreddits.searchByName(name);
     return results;
-  }
-
-  Future<void> loadPostData(int index) async {
-    await currentPosts[index].refreshComments();
-    await currentPosts[index].comments.replaceMore(limit: 0);
-    return null;
   }
 }
