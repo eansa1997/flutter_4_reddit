@@ -12,20 +12,16 @@ class RedditModel with ChangeNotifier {
   String AGENT;
   List<Submission> currentPosts;
   List<SubmissionData> currentPostsData;
-  int increment;
   void changeSubReddit(String newSubReddit) {
     subReddit = newSubReddit;
-    getCurrentPosts();
     notifyListeners();
+    getCurrentPosts();
   }
 
   RedditModel(BuildContext c) {
     this.context = c;
     currentPosts = new List<Submission>();
     currentPostsData = new List<SubmissionData>();
-    increment = 100;
-
-    print("");
     initAPI();
   }
   Future<void> initAPI() async {
@@ -65,16 +61,24 @@ class RedditModel with ChangeNotifier {
     var posts = r.subreddit(subReddit).hot(limit: 100);
     await for (Submission s in posts) {
       currentPosts.add(s);
+      SubmissionData data = new SubmissionData(s);
+      currentPostsData.add(data);
     }
-    getCurrentPostsData();
+
     notifyListeners();
   }
 
-  void getCurrentPostsData() {
-    for (int i = 0; i < currentPosts.length; i++) {
-      SubmissionData data = new SubmissionData(currentPosts[i]);
+  Future<void> loadMorePosts() async {
+    print("loading more posts..");
+    var posts = r
+        .subreddit(subReddit)
+        .hot(limit: 100, after: currentPosts[currentPosts.length - 1].fullname);
+    await for (Submission s in posts) {
+      currentPosts.add(s);
+      SubmissionData data = new SubmissionData(s);
       currentPostsData.add(data);
     }
+    notifyListeners();
   }
 
   SubmissionData getSubmissionData(int index) {
@@ -89,21 +93,6 @@ class RedditModel with ChangeNotifier {
   Future<void> loadPostData(int index) async {
     await currentPosts[index].refreshComments();
     await currentPosts[index].comments.replaceMore(limit: 0);
-    return null;
-  }
-
-  Future<void> loadMorePosts() async {
-    print("loading more posts");
-    if (increment > 800) return null; // reddit api has limit of 1000
-    currentPosts.clear();
-    currentPostsData.clear();
-    var posts = r.subreddit(subReddit).hot(limit: 100 + increment);
-    await for (Submission s in posts) {
-      currentPosts.add(s);
-    }
-    increment += 100;
-    getCurrentPostsData();
-    notifyListeners();
     return null;
   }
 }

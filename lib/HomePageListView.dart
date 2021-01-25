@@ -1,4 +1,3 @@
-import 'package:draw/draw.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter4reddit/PostListView.dart';
 
@@ -18,10 +17,8 @@ class HomePageListView extends StatelessWidget {
           itemCount: myReddit.currentPosts.length,
           itemBuilder: (context, index) {
             SubmissionData data = myReddit.getSubmissionData(index);
-            Submission sub = myReddit.currentPosts[index];
             if (index == myReddit.currentPosts.length - 1) {
-              // myReddit.loadMorePosts(); current method re downloads ALL tho posts instead of lazy loading
-              // widgets rebuild unneccarily
+              myReddit.loadMorePosts();
             }
             return Card(
               color: Colors.black,
@@ -32,14 +29,13 @@ class HomePageListView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-                          child: Text(data.title),
+                          child: Text(data.getSubmissionTitle()),
                           onTap: () async {
                             //await myReddit.loadPostData(index);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        PostListView(sub, data)));
+                                    builder: (context) => PostListView(data)));
                           },
                         ),
                         Row(
@@ -47,13 +43,13 @@ class HomePageListView extends StatelessWidget {
                             InkWell(
                               onTap: () {},
                               child: Text(
-                                data.sub,
+                                data.getSubredditName(),
                                 style:
                                     TextStyle(color: Colors.blue, fontSize: 10),
                               ),
                             ),
                             Text(
-                              "  ${data.upvotes}",
+                              "  ${data.getUpvotes()}",
                               style: TextStyle(fontSize: 10),
                             )
                           ],
@@ -63,7 +59,7 @@ class HomePageListView extends StatelessWidget {
                   ),
                   InkWell(
                     child: Container(
-                      child: data.thumbnail,
+                      child: data.getThumbnail(),
                     ),
                     onTap: () {
                       Navigator.push(
@@ -71,7 +67,8 @@ class HomePageListView extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => Container(
                               child: PhotoView(
-                                imageProvider: NetworkImage(data.thumbnailHQ),
+                                imageProvider:
+                                    NetworkImage(data.getThumbnailHD()),
                               ),
                             ),
                           ));

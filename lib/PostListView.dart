@@ -8,11 +8,9 @@ import 'package:markdown/markdown.dart' as mkDwn;
 import 'package:url_launcher/url_launcher.dart';
 
 class PostListView extends StatefulWidget {
-  Submission sub;
   SubmissionData data;
   List<dynamic> comments = new List();
-  PostListView(Submission s, SubmissionData d) {
-    sub = s;
+  PostListView(SubmissionData d) {
     data = d;
   }
   @override
@@ -21,11 +19,8 @@ class PostListView extends StatefulWidget {
 
 class _PostListViewState extends State<PostListView> {
   Future<void> getComments() async {
-    await widget.sub.refreshComments();
-    await widget.sub.comments.replaceMore(limit: 0);
-    setState(() {
-      widget.comments = widget.sub.comments.comments;
-    });
+    widget.comments = await widget.data.getComments();
+    setState(() {});
   }
 
   @override
@@ -52,19 +47,19 @@ class _PostListViewState extends State<PostListView> {
                   Container(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
                     child: Text(
-                      widget.sub.title,
+                      widget.data.getSubmissionTitle(),
                       style: TextStyle(color: Colors.green),
                     ),
                   ),
                   Container(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 10),
                     child: Text(
-                      "${widget.data.upvotes}  -  ${widget.comments.length} comments",
+                      "${widget.data.getUpvotes()}  -  ${widget.comments.length} comments",
                       style: TextStyle(color: Colors.blueGrey),
                     ),
                   ),
                   Html(
-                    data: mkDwn.markdownToHtml(widget.data.selfText,
+                    data: mkDwn.markdownToHtml(widget.data.getPostSelfText(),
                         inlineSyntaxes: [new mkDwn.InlineHtmlSyntax()]),
                     onLinkTap: (link) {
                       launch(link);

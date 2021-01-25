@@ -3,47 +3,64 @@ import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 class SubmissionData {
-  String title;
-  String imgURI;
   Image thumbnail;
-  int numOfUpvotes;
-  int thousands;
   String upvotes;
-  String sub;
-  String thumbnailHQ;
   String selfText;
-  HtmlUnescape unescapeHTML;
-  Submission s;
+  Submission submission;
   SubmissionData(Submission s) {
-    this.s = s;
-    title = s.title;
-    imgURI = s.thumbnail.toString();
-    if (imgURI == "self" || imgURI == "default" || imgURI == "image") {
-      thumbnail = null;
-    } else {
+    submission = s;
+  }
+  String getPostSelfText() {
+    if (selfText != null) return selfText;
+    selfText = "";
+    if (submission.selftext != null) {
+      var unescapeHTML = HtmlUnescape();
+      selfText = unescapeHTML.convert(submission.selftext);
+    }
+    return selfText;
+  }
+
+  String getSubmissionTitle() {
+    return submission.title;
+  }
+
+  Image getThumbnail() {
+    if (thumbnail != null) return thumbnail;
+    String imgURI = submission.thumbnail.toString();
+    if (imgURI.contains(".")) {
       thumbnail = Image.network(
-        s.thumbnail.toString(),
+        imgURI,
         width: 60,
         height: 60,
       );
     }
-    numOfUpvotes = s.upvotes;
+    return thumbnail;
+  }
+
+  String getUpvotes() {
+    // anything greater than 9999 gets turned into 10k
+    if (upvotes != null) return upvotes;
+    int numOfUpvotes = submission.upvotes;
     if (numOfUpvotes > 9999) {
-      thousands = (numOfUpvotes ~/ 1000);
+      int thousands = (numOfUpvotes ~/ 1000);
       upvotes = thousands.toString() + "k";
     } else {
       upvotes = numOfUpvotes.toString();
     }
-    sub = s.subreddit.displayName;
-    thumbnailHQ = s.url.toString();
-    getPostSelfText();
+    return upvotes;
   }
-  void getPostSelfText() {
-    selfText = "";
-    if (s.selftext != null) {
-      selfText = s.selftext;
-      unescapeHTML = HtmlUnescape();
-      selfText = unescapeHTML.convert(selfText);
-    }
+
+  String getSubredditName() {
+    return submission.subreddit.displayName;
+  }
+
+  String getThumbnailHD() {
+    return submission.url.toString();
+  }
+
+  Future<List<dynamic>> getComments() async {
+    await submission.refreshComments();
+    await submission.comments.replaceMore(limit: 0);
+    return submission.comments.comments;
   }
 }
