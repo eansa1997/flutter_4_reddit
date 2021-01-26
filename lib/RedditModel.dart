@@ -4,35 +4,44 @@ import 'package:flutter4reddit/SubmissonData.dart';
 import 'dart:convert' as json;
 
 class RedditModel with ChangeNotifier {
-  BuildContext context;
-  Reddit r;
-  String subReddit = "all";
-  String SECRET;
-  String CLIENT;
-  String AGENT;
-  List<SubmissionData> currentPostsData;
+  BuildContext _context;
+  Reddit _reddit;
+  String _subReddit = "all";
+  String _secret;
+  String _client;
+  String _agent;
+  List<SubmissionData> _currentPostsData;
+
+  String getSubReddit() {
+    return _subReddit;
+  }
+
+  int getCurrentPostsLength() {
+    return _currentPostsData.length;
+  }
+
   void changeSubReddit(String newSubReddit) {
-    subReddit = newSubReddit;
+    _subReddit = newSubReddit;
     notifyListeners();
     getCurrentPosts();
   }
 
   RedditModel(BuildContext c) {
-    this.context = c;
-    currentPostsData = new List<SubmissionData>();
+    this._context = c;
+    _currentPostsData = new List<SubmissionData>();
     initAPI();
   }
   Future<void> initAPI() async {
     String s =
-        await DefaultAssetBundle.of(context).loadString("assets/keys.json");
+        await DefaultAssetBundle.of(_context).loadString("assets/keys.json");
     Map keysJSON = json.jsonDecode(s);
-    CLIENT = keysJSON["CLIENT"];
-    SECRET = keysJSON["SECRET"];
-    AGENT = keysJSON["AGENT"];
-    r = await Reddit.createReadOnlyInstance(
-      clientId: CLIENT,
-      clientSecret: SECRET,
-      userAgent: AGENT,
+    _client = keysJSON["CLIENT"];
+    _secret = keysJSON["SECRET"];
+    _agent = keysJSON["AGENT"];
+    _reddit = await Reddit.createReadOnlyInstance(
+      clientId: _client,
+      clientSecret: _secret,
+      userAgent: _agent,
       //username: USERNAME,
       //password: PASSWORD
     );
@@ -47,18 +56,18 @@ class RedditModel with ChangeNotifier {
         Submission sub;
         print("My name is ${me.displayName}");
         */
-    var posts = r.front.hot(limit: 10);
+    var posts = _reddit.front.hot(limit: 10);
     await for (Submission s in posts) {
       print("Title: " + s.title + "\n");
     }
   }
 
   void getCurrentPosts() async {
-    currentPostsData.clear();
-    var posts = r.subreddit(subReddit).hot(limit: 100);
+    _currentPostsData.clear();
+    var posts = _reddit.subreddit(_subReddit).hot(limit: 100);
     await for (Submission s in posts) {
       SubmissionData data = new SubmissionData(s);
-      currentPostsData.add(data);
+      _currentPostsData.add(data);
     }
 
     notifyListeners();
@@ -66,23 +75,24 @@ class RedditModel with ChangeNotifier {
 
   Future<void> loadMorePosts() async {
     print("loading more posts..");
-    var posts = r.subreddit(subReddit).hot(
+    var posts = _reddit.subreddit(_subReddit).hot(
         limit: 100,
-        after:
-            currentPostsData[currentPostsData.length - 1].submission.fullname);
+        after: _currentPostsData[_currentPostsData.length - 1]
+            .submission
+            .fullname);
     await for (Submission s in posts) {
       SubmissionData data = new SubmissionData(s);
-      currentPostsData.add(data);
+      _currentPostsData.add(data);
     }
     notifyListeners();
   }
 
   SubmissionData getSubmissionData(int index) {
-    return currentPostsData[index];
+    return _currentPostsData[index];
   }
 
   Future<List<SubredditRef>> searchForSubredditsWithName(String name) async {
-    var results = r.subreddits.searchByName(name);
+    var results = _reddit.subreddits.searchByName(name);
     return results;
   }
 }

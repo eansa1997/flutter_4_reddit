@@ -14,10 +14,10 @@ class HomePageListView extends StatelessWidget {
           separatorBuilder: (context, index) => Divider(
                 color: Colors.blueGrey,
               ),
-          itemCount: myReddit.currentPostsData.length,
+          itemCount: myReddit.getCurrentPostsLength(),
           itemBuilder: (context, index) {
             SubmissionData data = myReddit.getSubmissionData(index);
-            if (index == myReddit.currentPostsData.length - 1) {
+            if (index == myReddit.getCurrentPostsLength() - 1) {
               myReddit.loadMorePosts();
             }
             return Card(

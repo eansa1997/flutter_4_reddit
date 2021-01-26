@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Consumer<RedditModel>(
               builder: (context, myReddit, child) =>
-                  Text("r/${myReddit.subReddit}"))),
+                  Text("r/${myReddit.getSubReddit()}"))),
       body: HomePageListView(),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.blueGrey,
