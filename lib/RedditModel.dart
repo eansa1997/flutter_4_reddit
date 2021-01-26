@@ -78,7 +78,7 @@ class RedditModel with ChangeNotifier {
     var posts = _reddit.subreddit(_subReddit).hot(
         limit: 100,
         after: _currentPostsData[_currentPostsData.length - 1]
-            .submission
+            .getSubmission()
             .fullname);
     await for (Submission s in posts) {
       SubmissionData data = new SubmissionData(s);
