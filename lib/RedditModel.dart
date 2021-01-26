@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:draw/draw.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter4reddit/SubmissonData.dart';
@@ -11,7 +13,8 @@ class RedditModel with ChangeNotifier {
   String _client;
   String _agent;
   List<SubmissionData> _currentPostsData;
-
+  StreamController _controller;
+  StreamController _subredditController;
   String getSubReddit() {
     return _subReddit;
   }
@@ -22,14 +25,25 @@ class RedditModel with ChangeNotifier {
 
   void changeSubReddit(String newSubReddit) {
     _subReddit = newSubReddit;
-    notifyListeners();
+    _subredditController.add(_subReddit);
+    //notifyListeners();
     getCurrentPosts();
+  }
+
+  Future<void> passController(StreamController controller) async {
+    _controller = controller;
+    await initAPI();
+    getCurrentPosts();
+  }
+
+  void passAppbarController(StreamController con) {
+    _subredditController = con;
+    _subredditController.add(_subReddit);
   }
 
   RedditModel(BuildContext c) {
     this._context = c;
     _currentPostsData = new List<SubmissionData>();
-    initAPI();
   }
   Future<void> initAPI() async {
     String s =
@@ -47,7 +61,7 @@ class RedditModel with ChangeNotifier {
     );
 
     // testAPI(); uncomment to verify API connected
-    getCurrentPosts();
+    //getCurrentPosts();
   }
 
   Future<void> testAPI() async {
@@ -63,14 +77,17 @@ class RedditModel with ChangeNotifier {
   }
 
   void getCurrentPosts() async {
+    _controller.add(1); // 1 == loading
+    print("loading..");
     _currentPostsData.clear();
     var posts = _reddit.subreddit(_subReddit).hot(limit: 100);
     await for (Submission s in posts) {
       SubmissionData data = new SubmissionData(s);
       _currentPostsData.add(data);
     }
-
-    notifyListeners();
+    _controller.add(3); // 3 = list loaded
+    print("loaded.");
+    //notifyListeners();
   }
 
   Future<void> loadMorePosts() async {

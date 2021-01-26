@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter4reddit/RedditModel.dart';
-import 'package:flutter4reddit/HomePageListView.dart';
+import 'package:flutter4reddit/HomePageBody.dart';
 import 'package:flutter4reddit/searchPage.dart';
 import 'package:provider/provider.dart';
 
@@ -23,23 +25,39 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(bodyText2: TextStyle(color: Colors.white)),
       ),
-      home: MyHomePage(),
+      home: MyHomePage(context),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({
-    Key key,
-  }) : super(key: key);
+  BuildContext context;
+  MyHomePage(BuildContext con) {
+    context = con;
+  }
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String subReddit = "all";
   int _currentIndex = 0;
+  StreamController _textController;
+  Stream _textStream;
+  @override
+  void initState() {
+    super.initState();
+    _textController = new StreamController();
+    _textStream = _textController.stream;
+    Provider.of<RedditModel>(context, listen: false)
+        .passAppbarController(_textController);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.close();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
           centerTitle: true,
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Consumer<RedditModel>(
-              builder: (context, myReddit, child) =>
-                  Text("r/${myReddit.getSubReddit()}"))),
-      body: HomePageListView(),
+          title: StreamBuilder(
+            stream: _textStream,
+            initialData: "all",
+            builder: (context, snapshot) {
+              return Text(snapshot.data);
+            },
+          )),
+      body: HomePageBody(context),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.blueGrey,
         backgroundColor: Colors.black,
