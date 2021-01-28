@@ -28,25 +28,31 @@ class _HomePageBodyState extends State<HomePageBody> {
     super.initState();
     _controller = StreamController();
     _stream = _controller.stream;
-    _controller.add(1);
     Provider.of<RedditModel>(widget.context, listen: false)
         .passController(_controller);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
         stream: _stream,
+        initialData: "loading",
         builder: (context, snapshot) {
-          if (snapshot.data == 1) {
+          if (snapshot.data == "loading") {
             return Center(child: CircularProgressIndicator());
           }
-          if (snapshot.data == 2) {
+          if (snapshot.data == "error") {
             return Center(
               child: Text("Error loading, try again."),
             );
           }
-          if (snapshot.data == 3) return PageListView();
+          if (snapshot.data == "loaded") return PageListView();
 
           return Container();
         });

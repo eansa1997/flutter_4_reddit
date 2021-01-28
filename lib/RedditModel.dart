@@ -77,7 +77,7 @@ class RedditModel with ChangeNotifier {
   }
 
   void getCurrentPosts() async {
-    _controller.add(1); // 1 == loading
+    _controller.add("loading"); // 1 == loading
     print("loading..");
     _currentPostsData.clear();
     var posts = _reddit.subreddit(_subReddit).hot(limit: 100);
@@ -85,7 +85,7 @@ class RedditModel with ChangeNotifier {
       SubmissionData data = new SubmissionData(s);
       _currentPostsData.add(data);
     }
-    _controller.add(3); // 3 = list loaded
+    _controller.add("loaded"); // 3 = list loaded
     print("loaded.");
     //notifyListeners();
   }
