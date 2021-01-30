@@ -87,8 +87,7 @@ class PageListView extends StatelessWidget {
                       children: [
                         InkWell(
                           child: Text(data.getSubmissionTitle()),
-                          onTap: () async {
-                            //await myReddit.loadPostData(index);
+                          onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
