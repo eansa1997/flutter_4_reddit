@@ -1,9 +1,10 @@
 # flutter4reddit
 
 A new Flutter application for reddit.
-Read only mode for now.   
-State management done with provider.  
 Reddit API package: [draw](https://pub.dev/packages/draw)  
+Reddit API package only supports user login mode for installed applications.      
+State management done with a hybrid provider/stream approach.     
+
 ![Demo](app.gif)  
 
 TODO:
