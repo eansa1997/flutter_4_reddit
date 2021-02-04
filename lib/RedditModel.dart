@@ -27,14 +27,13 @@ class RedditModel with ChangeNotifier {
   void changeSubReddit(String newSubReddit) {
     _subReddit = newSubReddit;
     _subredditController.add(_subReddit);
-    //notifyListeners();
+
     getCurrentPosts();
   }
 
   Future<void> passController(StreamController controller) async {
     _controller = controller;
     await initAPI();
-    //getCurrentPosts();
   }
 
   void passAppbarController(StreamController con) {
@@ -66,7 +65,6 @@ class RedditModel with ChangeNotifier {
           userAgent: _agent,
           clientId: _client,
           redirectUri: Uri.parse("https://www.google.com"));
-      //print(await _reddit.user.me());
       getCurrentPosts();
     }
   }
@@ -77,14 +75,10 @@ class RedditModel with ChangeNotifier {
   }
 
   Future<void> authenticate(String response) async {
-    print(response);
     int indexOfCode = response.indexOf("code=");
     String authCode = response.substring(indexOfCode + 5);
-    print(authCode);
 
     await _reddit.auth.authorize(authCode);
-    print(await _reddit.user.me());
-
     String credentials = _reddit.auth.credentials.toJson();
 
     ReadAndSaveCredentials.writeFile(credentials);
@@ -92,11 +86,6 @@ class RedditModel with ChangeNotifier {
   }
 
   Future<void> testAPI() async {
-    /*
-        Redditor me = await r.user.me();
-        Submission sub;
-        print("My name is ${me.displayName}");
-        */
     var posts = _reddit.front.hot(limit: 10);
     await for (Submission s in posts) {
       print("Title: " + s.title + "\n");
@@ -105,7 +94,6 @@ class RedditModel with ChangeNotifier {
 
   void getCurrentPosts() async {
     _controller.add("loading"); // 1 == loading
-    print("loading..");
     _currentPostsData.clear();
     var posts = _reddit.subreddit(_subReddit).hot(limit: 100);
     await for (Submission s in posts) {
@@ -113,12 +101,9 @@ class RedditModel with ChangeNotifier {
       _currentPostsData.add(data);
     }
     _controller.add("loaded"); // 3 = list loaded
-    print("loaded.");
-    //notifyListeners();
   }
 
   Future<void> loadMorePosts() async {
-    print("loading more posts..");
     var posts = _reddit.subreddit(_subReddit).hot(
         limit: 100,
         after: _currentPostsData[_currentPostsData.length - 1]
