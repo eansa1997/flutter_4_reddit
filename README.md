@@ -1,6 +1,6 @@
 # flutter4reddit
 
-A new Flutter application for reddit.
+A new Flutter application for reddit.   
 Reddit API package: [draw](https://pub.dev/packages/draw)  
 Reddit API package only supports user login mode for installed applications.      
 State management done with a hybrid provider/stream approach.     
