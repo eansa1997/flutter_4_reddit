@@ -1,6 +1,6 @@
 import 'package:draw/draw.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter4reddit/RedditModel.dart';
+import 'package:flutter4reddit/models/RedditModel.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {

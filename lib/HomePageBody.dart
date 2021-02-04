@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter4reddit/PostListView.dart';
 
-import 'package:flutter4reddit/SubmissonData.dart';
+import 'package:flutter4reddit/models/SubmissonData.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'RedditModel.dart';
+import 'models/RedditModel.dart';
 import 'package:photo_view/photo_view.dart';
 
 class HomePageBody extends StatefulWidget {
@@ -20,8 +20,7 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
-  StreamController
-      _controller; // 1 = loading, 2 = error with API, else build list
+  StreamController _controller;
   Stream _stream;
 
   @override

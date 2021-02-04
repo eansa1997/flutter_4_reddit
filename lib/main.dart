@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter4reddit/RedditModel.dart';
+import 'package:flutter4reddit/models/RedditModel.dart';
 import 'package:flutter4reddit/HomePageBody.dart';
 import 'package:flutter4reddit/searchPage.dart';
 import 'package:provider/provider.dart';

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:draw/draw.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter4reddit/SubmissonData.dart';
+import 'package:flutter4reddit/models/SubmissonData.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:markdown/markdown.dart' as mkDwn;
 
@@ -38,7 +38,6 @@ class _PostListViewState extends State<PostListView> {
 
   @override
   Widget build(BuildContext context) {
-    //sub = Provider.of<RedditModel>(context, listen: false).currentPosts[index];
     return StreamBuilder(
         stream: _stream,
         initialData: "loading",

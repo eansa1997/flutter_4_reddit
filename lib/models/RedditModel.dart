@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:draw/draw.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter4reddit/SubmissonData.dart';
+import 'package:flutter4reddit/models/SubmissonData.dart';
 import 'dart:convert' as json;
-import 'utils/ReadAndSaveCredentials.dart';
+import '../utils/ReadAndSaveCredentials.dart';
 
 class RedditModel with ChangeNotifier {
   BuildContext _context;
