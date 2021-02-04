@@ -5,6 +5,7 @@ import 'package:flutter4reddit/PostListView.dart';
 
 import 'package:flutter4reddit/SubmissonData.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'RedditModel.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -54,6 +55,40 @@ class _HomePageBodyState extends State<HomePageBody> {
           }
           if (snapshot.data == "loaded") return PageListView();
 
+          if (snapshot.data == "login") {
+            return Container(
+              child: InkWell(
+                onTap: () {
+                  String authUrl =
+                      Provider.of<RedditModel>(context, listen: false)
+                          .getAuthenticateUrl();
+                  int i = authUrl.indexOf("www.");
+                  authUrl = authUrl.substring(0, i) +
+                      "old." +
+                      authUrl.substring(i + 4);
+                  print(authUrl);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_context) => WebView(
+                                javascriptMode: JavascriptMode.unrestricted,
+                                initialUrl: authUrl,
+                                navigationDelegate: (navReq) {
+                                  if (navReq.url
+                                      .startsWith('https://www.google.com')) {
+                                    Provider.of<RedditModel>(context,
+                                            listen: false)
+                                        .authenticate(navReq.url);
+                                    Navigator.pop(context);
+                                  }
+                                  return NavigationDecision.navigate;
+                                },
+                              )));
+                },
+                child: Center(child: Text("Click to login")),
+              ),
+            );
+          }
           return Container();
         });
   }

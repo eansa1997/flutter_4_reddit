@@ -1,20 +1,21 @@
 import 'dart:async';
-
 import 'package:draw/draw.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter4reddit/SubmissonData.dart';
 import 'dart:convert' as json;
+import 'utils/ReadAndSaveCredentials.dart';
 
 class RedditModel with ChangeNotifier {
   BuildContext _context;
   Reddit _reddit;
   String _subReddit = "all";
-  String _secret;
   String _client;
   String _agent;
   List<SubmissionData> _currentPostsData;
   StreamController _controller;
   StreamController _subredditController;
+  Uri _authUrl;
   String getSubReddit() {
     return _subReddit;
   }
@@ -33,7 +34,7 @@ class RedditModel with ChangeNotifier {
   Future<void> passController(StreamController controller) async {
     _controller = controller;
     await initAPI();
-    getCurrentPosts();
+    //getCurrentPosts();
   }
 
   void passAppbarController(StreamController con) {
@@ -50,18 +51,44 @@ class RedditModel with ChangeNotifier {
         await DefaultAssetBundle.of(_context).loadString("assets/keys.json");
     Map keysJSON = json.jsonDecode(s);
     _client = keysJSON["CLIENT"];
-    _secret = keysJSON["SECRET"];
     _agent = keysJSON["AGENT"];
-    _reddit = await Reddit.createReadOnlyInstance(
-      clientId: _client,
-      clientSecret: _secret,
-      userAgent: _agent,
-      //username: USERNAME,
-      //password: PASSWORD
-    );
 
-    // testAPI(); uncomment to verify API connected
-    //getCurrentPosts();
+    String jsonCredentials = await ReadAndSaveCredentials.readFile();
+
+    if (jsonCredentials == null) {
+      _reddit = Reddit.createInstalledFlowInstance(
+          clientId: _client,
+          userAgent: _agent,
+          redirectUri: Uri.parse("https://www.google.com"));
+      _controller.add("login");
+    } else {
+      _reddit = Reddit.restoreInstalledAuthenticatedInstance(jsonCredentials,
+          userAgent: _agent,
+          clientId: _client,
+          redirectUri: Uri.parse("https://www.google.com"));
+      //print(await _reddit.user.me());
+      getCurrentPosts();
+    }
+  }
+
+  String getAuthenticateUrl() {
+    if (_authUrl == null) _authUrl = _reddit.auth.url(['*'], 'foobar');
+    return _authUrl.toString();
+  }
+
+  Future<void> authenticate(String response) async {
+    print(response);
+    int indexOfCode = response.indexOf("code=");
+    String authCode = response.substring(indexOfCode + 5);
+    print(authCode);
+
+    await _reddit.auth.authorize(authCode);
+    print(await _reddit.user.me());
+
+    String credentials = _reddit.auth.credentials.toJson();
+
+    ReadAndSaveCredentials.writeFile(credentials);
+    getCurrentPosts();
   }
 
   Future<void> testAPI() async {
