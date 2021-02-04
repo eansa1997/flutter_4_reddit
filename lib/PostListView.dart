@@ -44,7 +44,14 @@ class _PostListViewState extends State<PostListView> {
         initialData: "loading",
         builder: (context, snapshot) {
           if (snapshot.data == "loading") {
-            return Center(child: CircularProgressIndicator());
+            return ListView(
+              children: [
+                buildSubmissionTitleAndBody(context),
+                Center(
+                  child: CircularProgressIndicator(),
+                )
+              ],
+            );
           }
           if (snapshot.data == "loaded") {
             return buildSubmissionListView(context);
@@ -85,7 +92,7 @@ class _PostListViewState extends State<PostListView> {
             Container(
               padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 10),
               child: Text(
-                "${widget.data.getUpvotes()}  -  ${comments.length} comments",
+                "${widget.data.getUpvotes()}  -  ${(comments == null) ? 0 : comments.length} comments",
                 style: TextStyle(color: Colors.blueGrey),
               ),
             ),
