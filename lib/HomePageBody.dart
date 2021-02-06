@@ -112,6 +112,7 @@ class PageListView extends StatelessWidget {
               myReddit.loadMorePosts();
             }
             return Card(
+              margin: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
               color: Colors.black,
               child: Row(
                 children: [
