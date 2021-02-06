@@ -82,14 +82,14 @@ class _PostListViewState extends State<PostListView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
+              padding: EdgeInsetsDirectional.fromSTEB(8, 15, 0, 5),
               child: Text(
                 widget.data.getSubmissionTitle(),
                 style: TextStyle(color: Colors.green),
               ),
             ),
             Container(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 10),
+              padding: EdgeInsetsDirectional.fromSTEB(8, 5, 0, 10),
               child: Text(
                 "${widget.data.getUpvotes()}  -  ${(comments == null) ? 0 : comments.length} comments",
                 style: TextStyle(color: Colors.blueGrey),
@@ -114,9 +114,12 @@ class _PostListViewState extends State<PostListView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            c.author,
-            style: TextStyle(color: Colors.blueGrey),
+          Container(
+            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+            child: Text(
+              c.author,
+              style: TextStyle(color: Colors.blueGrey),
+            ),
           ),
           Container(
             padding: EdgeInsets.all(0),
