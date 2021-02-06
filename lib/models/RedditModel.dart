@@ -31,6 +31,17 @@ class RedditModel with ChangeNotifier {
     getCurrentPosts();
   }
 
+  Future<void> signOutUser() async {
+    await ReadAndSaveCredentials.deleteFile();
+    _reddit = Reddit.createInstalledFlowInstance(
+        clientId: _client,
+        userAgent: _agent,
+        redirectUri: Uri.parse("https://www.google.com"));
+    _controller.add("login");
+    _subReddit = "all";
+    _subredditController.add(_subReddit);
+  }
+
   Future<void> passController(StreamController controller) async {
     _controller = controller;
     await initAPI();

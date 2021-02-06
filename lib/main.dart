@@ -6,6 +6,8 @@ import 'package:flutter4reddit/HomePageBody.dart';
 import 'package:flutter4reddit/searchPage.dart';
 import 'package:provider/provider.dart';
 
+import 'SettingsPage.dart';
+
 void main() {
   runApp(ChangeNotifierProvider(
     create: (context) => RedditModel(context),
@@ -116,6 +118,12 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => new SearchPage()),
+      );
+    }
+    if (_currentIndex == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => new SettingsPage()),
       );
     }
   }

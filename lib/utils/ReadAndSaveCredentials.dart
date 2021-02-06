@@ -24,4 +24,11 @@ class ReadAndSaveCredentials {
       file.writeAsString(credentials);
     } catch (e) {}
   }
+
+  static Future<void> deleteFile() async {
+    try {
+      File file = await getLocalFile();
+      file.delete();
+    } catch (e) {}
+  }
 }
