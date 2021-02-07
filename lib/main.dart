@@ -71,9 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: StreamBuilder(
             stream: _textStream,
-            initialData: "all",
+            initialData: "r/all",
             builder: (context, snapshot) {
-              return Text(snapshot.data);
+              return Text("r/" + snapshot.data);
             },
           )),
       body: HomePageBody(context),

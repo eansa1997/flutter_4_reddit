@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter4reddit/PostListView.dart';
 
 import 'package:flutter4reddit/models/SubmissonData.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'models/RedditModel.dart';
 import 'package:photo_view/photo_view.dart';
@@ -64,23 +66,27 @@ class _HomePageBodyState extends State<HomePageBody> {
                       "old." +
                       authUrl.substring(i + 4);
                   print(authUrl);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_context) => WebView(
-                                javascriptMode: JavascriptMode.unrestricted,
-                                initialUrl: authUrl,
-                                navigationDelegate: (navReq) {
-                                  if (navReq.url
-                                      .startsWith('https://www.google.com')) {
-                                    Provider.of<RedditModel>(context,
-                                            listen: false)
-                                        .authenticate(navReq.url);
-                                    Navigator.pop(context);
-                                  }
-                                  return NavigationDecision.navigate;
-                                },
-                              )));
+                  if (Platform.isAndroid) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_context) => WebView(
+                                  javascriptMode: JavascriptMode.unrestricted,
+                                  initialUrl: authUrl,
+                                  navigationDelegate: (navReq) {
+                                    if (navReq.url
+                                        .startsWith('https://www.google.com')) {
+                                      Provider.of<RedditModel>(context,
+                                              listen: false)
+                                          .authenticate(navReq.url);
+                                      Navigator.pop(context);
+                                    }
+                                    return NavigationDecision.navigate;
+                                  },
+                                )));
+                  } else if (Platform.isWindows) {
+                    launch(authUrl);
+                  }
                 },
                 child: Center(child: Text("Click to login")),
               ),
