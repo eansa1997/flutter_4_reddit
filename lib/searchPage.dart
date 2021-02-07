@@ -16,7 +16,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    searchResults = new List();
+    searchResults = new List<String>.empty(growable: true);
   }
 
   @override
@@ -102,7 +102,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> searchForSub(String name) async {
-    searchResults = new List();
+    searchResults = new List<String>.empty(growable: true);
 
     searchResults.add(name);
     List<SubredditRef> results =

@@ -1,6 +1,7 @@
 import 'package:draw/draw.dart';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:markdown/markdown.dart';
 
 class SubmissionData {
   Image _thumbnail;
@@ -19,7 +20,8 @@ class SubmissionData {
     _selfText = "";
     if (_submission.selftext != null) {
       var unescapeHTML = HtmlUnescape();
-      _selfText = unescapeHTML.convert(_submission.selftext);
+      _selfText = markdownToHtml(unescapeHTML.convert(_submission.selftext));
+      //print(_selfText);
     }
     return _selfText;
   }

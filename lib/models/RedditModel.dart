@@ -54,7 +54,7 @@ class RedditModel with ChangeNotifier {
 
   RedditModel(BuildContext c) {
     this._context = c;
-    _currentPostsData = new List<SubmissionData>();
+    _currentPostsData = new List<SubmissionData>.empty(growable: true);
   }
   Future<void> initAPI() async {
     String s =

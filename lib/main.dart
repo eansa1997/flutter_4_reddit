@@ -33,10 +33,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  BuildContext context;
-  MyHomePage(BuildContext con) {
-    context = con;
-  }
+  final BuildContext context;
+  MyHomePage(this.context);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();

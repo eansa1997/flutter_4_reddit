@@ -10,10 +10,8 @@ import 'models/RedditModel.dart';
 import 'package:photo_view/photo_view.dart';
 
 class HomePageBody extends StatefulWidget {
-  BuildContext context;
-  HomePageBody(BuildContext con) {
-    context = con;
-  }
+  final BuildContext context;
+  HomePageBody(this.context);
 
   @override
   State<HomePageBody> createState() => _HomePageBodyState();
